@@ -68,7 +68,6 @@ static const uint8 S310_INIT[] = { 0x54 };
 
 static const uint8 S330_RF_ANTENNA_ON[] = { 0xD4, 0x32, 0x01, 0x01 };
 static const uint8 S330_RF_ANTENNA_OFF[] = { 0xD4, 0x32, 0x01, 0x00 };
-static const uint8 S330_GET_VERSION[] = { 0xD4, 0x02 };
 static const uint8 S330_DESELECT[] = { 0xD4, 0x44, 0x01 };
 
 
