@@ -1,5 +1,7 @@
 2011-08-23  Ito Hiroyuki  <ZXB01226 at nifty.com>
 
+	* tests/pasori_test.c (test): do all tests always.
+
 	* src/pasori_command.c: remove unused variable.
 
 2011-08-14  Hiroyuki Ito  <ZXB01226 at nifty.com>

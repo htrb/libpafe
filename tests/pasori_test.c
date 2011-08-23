@@ -9,48 +9,48 @@ int
 test(pasori *p)
 {
   unsigned char data[] = "test data.";
-  int n = sizeof(data) - 1;
-  
+  int n = sizeof(data) - 1, r = 0;
+
   printf("Echo test... ");
   if (pasori_test_echo(p, data, &n)) {
+    r |= 1;
     printf("error!\n");
-    return 1;
   } else {
     printf("success\n");
   }
 
   printf("EPROM test... ");
   if (pasori_test_eprom(p)) {
+    r |= 1;
     printf("error!\n");
-    return 1;
   } else {
     printf("success\n");
   }
 
   printf("RAM test... ");
   if (pasori_test_ram(p)) {
+    r |= 1;
     printf("error!\n");
-    return 1;
   } else {
     printf("success\n");
   }
 
   printf("CPU test... ");
   if (pasori_test_cpu(p)) {
+    r |= 1;
     printf("error!\n");
-    return 1;
   } else {
     printf("success\n");
   }
 
   printf("Polling test... ");
   if (pasori_test_polling(p)) {
+    r |= 1;
     printf("error!\n");
-    return 1;
   } else {
     printf("success\n");
   }
-  return 0;
+  return r;
 }
 
 void
