@@ -1,6 +1,6 @@
 /* $Id: pasori_command.c,v 1.11 2009-10-09 07:43:13 hito Exp $ */
 /* pasori commands */
-#ifdef HAVE_CONFIG_H 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 #include <stdlib.h>
@@ -114,7 +114,7 @@ pasori_init_test(pasori *p, const uint8 *testptrn, int size)
 
 /* exports */
 
-int 
+int
 pasori_test(pasori *p, int code, uint8 *data, int *size, uint8 *rdata, int *rsize)
 {
   uint8 recv[DATASIZE + 1];
@@ -177,7 +177,7 @@ pasori_test(pasori *p, int code, uint8 *data, int *size, uint8 *rdata, int *rsiz
   return 0;
 }
 
-int 
+int
 pasori_test_echo(pasori *p, uint8 *data, int *size)
 {
   int n = *size, l = DATASIZE, r;
@@ -196,42 +196,40 @@ pasori_test_echo(pasori *p, uint8 *data, int *size)
   return 0;
 }
 
-int 
+int
 pasori_test_eprom(pasori *p)
 {
   uint8 recv[DATASIZE + 1];
   int n = 0, rn = DATASIZE;
-  
+
   return pasori_test(p, 0x01, NULL, &n, recv, &rn);
 }
 
-int 
+int
 pasori_test_ram(pasori *p)
 {
   int n = 0;
-  
+
   return pasori_test(p, 0x02, NULL, &n, NULL, NULL);
 }
 
-int 
+int
 pasori_test_cpu(pasori *p)
 {
   int n = 0;
-  
+
   return pasori_test(p, 0x03, NULL, &n, NULL, NULL);
 }
 
-int 
+int
 pasori_test_polling(pasori *p)
 {
   int n = 0;
-  
+
   return pasori_test(p, 0x10, NULL, &n, NULL, NULL);
 }
 
-
-
-void 
+void
 pasori_set_timeout(pasori *p, int timeout)
 {
   if (p == NULL || timeout < 0)
@@ -328,10 +326,10 @@ pasori_packet_read(pasori * p, uint8 * data, int *size)
 }
 
 /*
- * 3th byte is the max number of target to sence.  
+ * 3rd byte is the max number of target to sence.
  * It seems valid values are 0x01 or 0x02 for devices this driver suport, and
- * it can sences two targets at Mifare cards, but not at Felica cards.  
- * 
+ * it can sences two targets at Mifare cards, but not at Felica cards.
+ *
  * 4th byte may mean protocol(tag types).
  *   0x00 = mifare,iso14443A(106kbps*)
  *   0x01 = Felica(212kbps)
@@ -339,20 +337,20 @@ pasori_packet_read(pasori * p, uint8 * data, int *size)
  *   0x03 = iso14443B(106kbps*)
  *   0x04 = Nfc Forum Type1(106kbps*)
  *   *=default bit rate(To change this, use pn53x 'D44E' command.)
- * 
+ *
  * At least on default setting, it seems my pn531 dose not accept '0x03''0x04'.
- * RC-S330 accepts '0x03''0x04', but in the '0x03' case payload length is up to 
+ * RC-S330 accepts '0x03''0x04', but in the '0x03' case payload length is up to
  * 2 byte, in the '0x04' case payload length is zero , and in both case
- * 3th byte must be '0x01'.
- * 
+ * 3rd byte must be '0x01'.
+ *
  * */
-int 
+int
 pasori_list_passive_target(pasori *pp, unsigned char *payload, int *size)
 {
   int r, n;
   unsigned char cmd[DATASIZE + 1];
 
-  if(pp == NULL || payload == NULL || size == NULL || *size < 0) 
+  if(pp == NULL || payload == NULL || size == NULL || *size < 0)
     return PASORI_ERR_FORMAT;
 
   if (pp->type != PASORI_TYPE_S330)
@@ -408,7 +406,7 @@ pasori_write(pasori *p, uint8 *data, int *size)
   return r;			/* FIXME:handle error */
 }
 
-int 
+int
 pasori_read(pasori *p, uint8 *data, int *size)
 {
   uint8 recv[DATASIZE + 1];
@@ -564,7 +562,7 @@ pasori_version(pasori *p, int *v1, int *v2)
   return 0;
 }
 
-int 
+int
 pasori_type(pasori *p)
 {
   if (p == NULL) {
@@ -618,7 +616,7 @@ pasori_close(pasori * pp)
   free(pp);
 }
 
-static void 
+static void
 get_end_points(pasori *pas)
 {
 #ifdef HAVE_LIBUSB_1
@@ -744,7 +742,7 @@ open_usb(pasori *pp)
 #ifdef DEBUG_USB
     Log("Check for %04x:%04x\n", desc.idVendor, desc.idProduct);	/* debug */
 #endif
-    if (desc.idVendor == PASORIUSB_VENDOR && 
+    if (desc.idVendor == PASORIUSB_VENDOR &&
 	(desc.idProduct == PASORIUSB_PRODUCT_S310 ||
 	 desc.idProduct == PASORIUSB_PRODUCT_S320 ||
 	 desc.idProduct == PASORIUSB_PRODUCT_S330)) {

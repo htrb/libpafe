@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(libpafe, 0.0.7, ZXB01226@nifty.com)
-AM_INIT_AUTOMAKE(libpafe, 0.0.7)
+AC_INIT(libpafe, 0.0.8, ZXB01226@nifty.com)
+AM_INIT_AUTOMAKE(libpafe, 0.0.8)
 
 AC_CONFIG_SRCDIR([src/libpafe.h])
 AC_CONFIG_SRCDIR([tests/pasori_test.c])
@@ -48,4 +48,4 @@ then
 fi
 
 #AM_CONFIG_HEADER(config.h)
-AC_OUTPUT(Makefile src/Makefile tests/Makefile debian/Makefile)
+AC_OUTPUT(Makefile src/Makefile tests/Makefile debian/Makefile spec/Makefile)

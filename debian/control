@@ -1,7 +1,7 @@
 Source: libpafe
 Priority: extra
 Maintainer: Ito Hiroyuki <ZXB01226@nifty.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libusb-dev
+Build-Depends: debhelper (>= 8), autotools-dev, libusb-dev
 Standards-Version: 3.8.1
 Section: libs
 Homepage: http://homepage3.nifty.com/slokar/pasori/libpafe.html

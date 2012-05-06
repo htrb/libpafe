@@ -33,7 +33,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = debian
+subdir = spec
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -164,10 +164,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = changelog compat control copyright dirs docs rules watch	\
-	libpafe-dev.dirs libpafe-dev.install libpafe-dev.substvars	\
-	libpafe.dir libpafe.install libpafe.substvars libpafe.udev
-
+EXTRA_DIST = libpafe.spec
 all: all-am
 
 .SUFFIXES:
@@ -180,9 +177,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu debian/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu spec/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu debian/Makefile
+	  $(AUTOMAKE) --gnu spec/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

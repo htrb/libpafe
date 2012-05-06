@@ -1,21 +1,16 @@
 This package was debianized by Ito Hiroyuki <ZXB01226@nifty.com> on
 Sun, 19 Jul 2009 22:35:45 +0900.
 
-It was downloaded from <url://example.com>
+It was downloaded from <http://homepage3.nifty.com/slokar/pasori/libpafe.html>
 
 Upstream Author(s):
 
-    <put author's name and email here>
-    <likewise for another author>
+    <Ito Hiroyuki ZXB01226@nifty.com>
+    <Ryo Fujita rfujita@redhat.com>
 
-Copyright:
+Copyright: Copyright (C) 2009 Ito Hiroyuki
 
-    <Copyright (C) YYYY Name OfAuthor>
-    <likewise for another author>
-
-License:
-
-    <Put the license of the package here indented by 4 spaces>
+License: GPL-3+
 
 The Debian packaging is:
 
