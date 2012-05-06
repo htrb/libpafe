@@ -1,6 +1,6 @@
 Summary: PaSoRi and Felica library
 Name: libpafe
-Version: 0.0.7
+Version: 0.0.8
 Release: 0%{?dist}
 License: GPLv2
 Group: System Environment/Libraries

@@ -8,7 +8,7 @@ Homepage: http://homepage3.nifty.com/slokar/pasori/libpafe.html
 
 Package: libpafe-dev
 Section: libdevel
-Architecture: any
+Architecture: all
 Depends: libpafe (= ${binary:Version})
 Description: PaSoRi and Felica library (development files)
  The libpafe library can be used by applications to access Ferica via PaSoRi (RC-S32, RC-S330).
