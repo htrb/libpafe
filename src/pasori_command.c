@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "libpafe.h"
 
@@ -454,6 +455,8 @@ pasori_read(pasori *p, uint8 *data, int *size)
 int
 pasori_init(pasori * p)
 {
+  struct timespec wait = {0, 10000000}; /* 10 ms */
+
   if (p == NULL)
     return PASORI_ERR_PARM;
 
@@ -473,6 +476,7 @@ pasori_init(pasori * p)
     break;
   case PASORI_TYPE_S330:
     pasori_init_test(p, S330_RF_ANTENNA_ON, sizeof(S330_RF_ANTENNA_ON));
+    nanosleep(&wait, NULL);
     break;
   default:
     return PASORI_ERR_TYPE;
