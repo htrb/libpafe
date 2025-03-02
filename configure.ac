@@ -1,39 +1,42 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
-AC_INIT(libpafe, 0.0.8, ZXB01226@nifty.com)
-AM_INIT_AUTOMAKE(libpafe, 0.0.8)
+AC_PREREQ([2.72])
+AC_CONFIG_MACRO_DIRS([m4])
+AC_INIT([libpafe],[0.0.9],[ZXB01226@nifty.com])
+AM_INIT_AUTOMAKE
 
 AC_CONFIG_SRCDIR([src/libpafe.h])
 AC_CONFIG_SRCDIR([tests/pasori_test.c])
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
 
-AC_PROG_LIBTOOL
+LT_INIT
 AC_ENABLE_SHARED
-dnl AM_DISABLE_STATIC
-# AM_PROG_LIBTOOL
+dnl AC_DISABLE_STATIC([])
+# LT_INIT
 
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-# Checks for header files.
-AC_HEADER_STDC
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_CHECK_HEADERS([fcntl.h stdlib.h stdio.h string.h sys/ioctl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
+
 AC_STRUCT_TM
 
 AC_CHECK_SIZEOF(short, 2)
 
-# Checks for library functions.
-AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_FUNC_MKTIME
 AC_FUNC_SELECT_ARGTYPES
@@ -48,4 +51,5 @@ then
 fi
 
 #AM_CONFIG_HEADER(config.h)
-AC_OUTPUT(Makefile src/Makefile tests/Makefile debian/Makefile spec/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile debian/Makefile spec/Makefile])
+AC_OUTPUT
