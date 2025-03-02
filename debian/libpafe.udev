@@ -6,5 +6,6 @@ LABEL="pasori_rules_start"
 ATTRS{idVendor}=="054c", ATTRS{idProduct}=="006c", MODE="0664", GROUP="plugdev"
 ATTRS{idVendor}=="054c", ATTRS{idProduct}=="01bb", MODE="0664", GROUP="plugdev"
 ATTRS{idVendor}=="054c", ATTRS{idProduct}=="02e1", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0dc9", MODE="0664", GROUP="plugdev"
 
 LABEL="pasori_rules_end"
