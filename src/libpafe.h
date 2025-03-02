@@ -18,12 +18,13 @@ enum PASORI_TYPE {
   PASORI_TYPE_S310,
   PASORI_TYPE_S320,
   PASORI_TYPE_S330,
+  PASORI_TYPE_S300,
 };
 
 struct tag_pasori;
 
 typedef struct tag_pasori pasori;
-/*~DEFINE pasori */
+/* DEFINE pasori */
 
 typedef struct _ferica_area
 {

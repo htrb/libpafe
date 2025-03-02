@@ -1,5 +1,5 @@
 /* $Id: felica_command.c,v 1.5 2009-10-09 07:43:13 hito Exp $ */
-#ifdef HAVE_CONFIG_H 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 #include <stdlib.h>
@@ -10,6 +10,8 @@
 #define DATASIZE 255
 
 /* read w/o encrypt */
+
+static int felica_pasori_write(pasori *pp, unsigned char *cmd, int *n);
 
 static int
 _felica_pasori_read(pasori *p, uint8 *data, int *size, int ofst)
@@ -47,6 +49,9 @@ felica_pasori_read(pasori *p, uint8 *data, int *size)
   case PASORI_TYPE_S310:
   case PASORI_TYPE_S320:
     ofst = 0;
+    break;
+  case PASORI_TYPE_S300:
+    ofst = 3;
     break;
   case PASORI_TYPE_S330:
     ofst = 2;
@@ -144,7 +149,7 @@ felica_read(felica * f, int *n, felica_block_info *info, uint8 *data)
   memcpy(cmd + FELICA_IDM_LENGTH + snum * 2 + 3, blklist, blen);
 
   size = FELICA_IDM_LENGTH + snum * 2 + blen + 3;
-  i = pasori_write(f->p, cmd, &size);
+  i = felica_pasori_write(f->p, cmd, &size);
   if (i) {
     return i;
   }
@@ -186,6 +191,64 @@ felica_read_single(felica *f, int servicecode, int mode, uint8 addr, uint8 *data
   return felica_read(f, &n, &info, data);
 }
 
+static int
+s300_write(pasori *pp, unsigned char *data, int *size)
+{
+  int r, n;
+  unsigned char cmd[DATASIZE + 1];
+
+  if(pp == NULL || data == NULL || size == NULL || *size < 0)
+    return PASORI_ERR_FORMAT;
+
+  switch (pasori_type(pp)) {
+  case PASORI_TYPE_S300:
+    n = *size;
+
+    cmd[0] = 0xff;
+    cmd[1] = 0x50;
+    cmd[2] = 0x00;
+    cmd[3] = 0x01;
+    cmd[4] = 0x00;
+    cmd[5] = 0x00;
+    cmd[6] = n + 12;
+    cmd[7] = 0x5f;
+    cmd[8] = 0x46;
+    cmd[9] = 0x04;
+    cmd[10] = 0x80;
+    cmd[11] = 0x1A;
+    cmd[12] = 0x06;
+    cmd[13] = 0x00;
+    cmd[14] = 0x95;
+    cmd[15] = 0x82;
+    cmd[16] = 0x00;
+    cmd[17] = n + 1;
+    cmd[18] = n + 1;
+    cmd[19 + n] = 0;
+    cmd[20 + n] = 0;
+    cmd[21 + n] = 0;
+    memcpy(cmd + 19, data, n);
+    n += 22;
+    r = pasori_packet_write(pp, cmd, &n);
+    *size = n - 22;
+    break;
+  default:
+    return PASORI_ERR_TYPE;
+  }
+
+  return r;			/* FIXME:handle error */
+}
+
+static int
+felica_pasori_write(pasori *pp, unsigned char *cmd, int *n)
+{
+  int r;
+  if (pasori_type(pp) ==  PASORI_TYPE_S300) {
+    r = s300_write(pp, cmd, n);
+  } else {
+    r = pasori_write(pp, cmd, n);
+  }
+  return r;
+}
 felica *
 felica_polling(pasori *pp, uint16 systemcode, uint8 RFU, uint8 timeslot)
 {
@@ -211,6 +274,10 @@ felica_polling(pasori *pp, uint16 systemcode, uint8 RFU, uint8 timeslot)
   case PASORI_TYPE_S320:
     ofst = 0;
     pasori_write(pp, cmd, &n);
+    break;
+  case PASORI_TYPE_S300:
+    ofst = 3;
+    s300_write(pp, cmd, &n);
     break;
   case PASORI_TYPE_S330:
     ofst = 3;
@@ -271,7 +338,6 @@ set_area_code(felica *f, uint16 data)
 
   if (f == NULL)
     return;
-  
   if (!(data & 0x3e)) {
     n = f->area_num++;
     f->area[n].code = data >> 6;
@@ -285,7 +351,7 @@ set_area_code(felica *f, uint16 data)
   }
 }
 
-int 
+int
 felica_search_service(felica *f)
 {
   uint8 cmd[DATASIZE + 1];
@@ -310,7 +376,7 @@ felica_search_service(felica *f)
     cmd[FELICA_IDM_LENGTH + 2] = H8(idx);
 
     n = FELICA_IDM_LENGTH + 3;
-    pasori_write(f->p, cmd, &n);
+    felica_pasori_write(f->p, cmd, &n);
 
     n = DATASIZE;
     felica_pasori_read(f->p, resp, &n);
@@ -328,7 +394,7 @@ felica_search_service(felica *f)
   return 0;
 }
 
-int 
+int
 felica_request_service(felica *f, int *n, uint16 *list, uint16 *data)
 {
   uint8 cmd[DATASIZE + 1];
@@ -350,12 +416,12 @@ felica_request_service(felica *f, int *n, uint16 *list, uint16 *data)
 
     len = FELICA_IDM_LENGTH + i * 2 + 3;
 
-    cmd[len - 1] = list[i] & 0xff; 
-    cmd[len] = list[i] >> 8; 
+    cmd[len - 1] = list[i] & 0xff;
+    cmd[len] = list[i] >> 8;
   }
   cmd[FELICA_IDM_LENGTH + 1] = i;
 
-  r = pasori_write(f->p, cmd, &len);
+  r = felica_pasori_write(f->p, cmd, &len);
   if (r)
     return r;
 
@@ -374,13 +440,13 @@ felica_request_service(felica *f, int *n, uint16 *list, uint16 *data)
     if (len >= DATASIZE)
       break;
 
-    data[i] = (resp[len - 1] << 8) + resp[len]; 
+    data[i] = (resp[len - 1] << 8) + resp[len];
   }
 
   return 0;
 }
 
-int 
+int
 felica_request_response(felica *f, uint8 *mode)
 {
   uint8 cmd[DATASIZE + 1];
@@ -396,7 +462,7 @@ felica_request_response(felica *f, uint8 *mode)
   memcpy(cmd + 1, f->IDm, FELICA_IDM_LENGTH);
 
   len = FELICA_IDM_LENGTH + 1;
-  r = pasori_write(f->p, cmd, &len);
+  r = felica_pasori_write(f->p, cmd, &len);
   if (r)
     return r;
 
@@ -404,7 +470,6 @@ felica_request_response(felica *f, uint8 *mode)
   r = felica_pasori_read(f->p, resp, &len);
   if (r)
     return r;
-  
   if (resp[0] != FELICA_ANS_REQUEST_RESPONSE)
     return PASORI_ERR_DATA;
 
@@ -413,7 +478,7 @@ felica_request_response(felica *f, uint8 *mode)
   return 0;
 }
 
-int 
+int
 felica_request_system(felica *f, int *n, uint16 *data)
 {
   uint8 cmd[DATASIZE + 1];
@@ -429,7 +494,7 @@ felica_request_system(felica *f, int *n, uint16 *data)
   memcpy(cmd + 1, f->IDm, FELICA_IDM_LENGTH);
   len = FELICA_IDM_LENGTH + 1;
 
-  r = pasori_write(f->p, cmd, &len);
+  r = felica_pasori_write(f->p, cmd, &len);
   if (r)
     return r;
 
@@ -437,7 +502,7 @@ felica_request_system(felica *f, int *n, uint16 *data)
   r = felica_pasori_read(f->p, resp, &len);
   if (r)
     return r;
-  
+
   if (resp[0] != FELICA_ANS_REQUEST_SYSTEM)
     return PASORI_ERR_DATA;
 
