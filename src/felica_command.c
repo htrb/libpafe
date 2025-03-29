@@ -37,7 +37,7 @@ _felica_pasori_read(pasori *p, uint8 *data, int *size, int ofst)
 
   *size = len;
 
-  return i;
+  return 0;
 }
 
 static int
@@ -65,7 +65,7 @@ felica_pasori_read(pasori *p, uint8 *data, int *size)
 
 
 static int
-search_service(int n, int *list, int val)
+search_service(int n, const int *list, int val)
 {
   int i;
 
@@ -192,7 +192,7 @@ felica_read_single(felica *f, int servicecode, int mode, uint8 addr, uint8 *data
 }
 
 static int
-s300_write(pasori *pp, unsigned char *data, int *size)
+s300_write(pasori *pp, const unsigned char *data, int *size)
 {
   int r, n;
   unsigned char cmd[DATASIZE + 1];
@@ -249,6 +249,7 @@ felica_pasori_write(pasori *pp, unsigned char *cmd, int *n)
   }
   return r;
 }
+
 felica *
 felica_polling(pasori *pp, uint16 systemcode, uint8 RFU, uint8 timeslot)
 {
@@ -299,6 +300,9 @@ felica_polling(pasori *pp, uint16 systemcode, uint8 RFU, uint8 timeslot)
     return NULL;
   }
   f = (felica *) malloc(sizeof(felica));
+  if (f == NULL) {
+    return NULL;
+  }
   f->p = pp;
   memcpy(f->IDm, &resp[1], FELICA_IDM_LENGTH);
   memcpy(f->PMm, &resp[9], FELICA_PMM_LENGTH);
@@ -310,7 +314,7 @@ felica_polling(pasori *pp, uint16 systemcode, uint8 RFU, uint8 timeslot)
 }
 
 int
-felica_get_idm(felica *f, uint8 *idm)
+felica_get_idm(const felica *f, uint8 *idm)
 {
   if (f == NULL || idm == NULL)
     return PASORI_ERR_PARM;
@@ -321,7 +325,7 @@ felica_get_idm(felica *f, uint8 *idm)
 }
 
 int
-felica_get_pmm(felica *f, uint8 *pmm)
+felica_get_pmm(const felica *f, uint8 *pmm)
 {
   if (f == NULL || pmm == NULL)
     return PASORI_ERR_PARM;
@@ -395,7 +399,7 @@ felica_search_service(felica *f)
 }
 
 int
-felica_request_service(felica *f, int *n, uint16 *list, uint16 *data)
+felica_request_service(felica *f, int *n, const uint16 *list, uint16 *data)
 {
   uint8 cmd[DATASIZE + 1];
   uint8 resp[DATASIZE + 1];

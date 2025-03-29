@@ -80,7 +80,7 @@ static const uint8 S300_RF_ANTENNA_ON[]             = { 0xFF, 0x50, 0x00, 0x00, 
 /* internal */
 
 static int
-checksum(uint8 *data, int size)
+checksum(const uint8 *data, int size)
 {
   int i, sum = 0;
 
@@ -119,7 +119,7 @@ pasori_init_test(pasori *p, const uint8 *testptrn, int size)
 /* exports */
 
 int
-pasori_test(pasori *p, int code, uint8 *data, int *size, uint8 *rdata, int *rsize)
+pasori_test(pasori *p, int code, const uint8 *data, const int *size, uint8 *rdata, int *rsize)
 {
   uint8 recv[DATASIZE + 1];
   int n, r;
@@ -128,7 +128,7 @@ pasori_test(pasori *p, int code, uint8 *data, int *size, uint8 *rdata, int *rsiz
   if (p == NULL || size == NULL)
     return PASORI_ERR_PARM;
 
-  if (code == 0x00 && (size ==NULL ||rdata == NULL || rsize == NULL))
+  if (code == 0x00 && (size == NULL ||rdata == NULL || rsize == NULL))
     return PASORI_ERR_PARM;
 
   switch (p->type) {
@@ -182,7 +182,7 @@ pasori_test(pasori *p, int code, uint8 *data, int *size, uint8 *rdata, int *rsiz
 }
 
 int
-pasori_test_echo(pasori *p, uint8 *data, int *size)
+pasori_test_echo(pasori *p, const uint8 *data, const int *size)
 {
   int n = *size, l = DATASIZE, r;
   uint8 rdata[DATASIZE + 1];
@@ -243,7 +243,7 @@ pasori_set_timeout(pasori *p, int timeout)
 }
 
 int
-pasori_packet_write(pasori *p, uint8 *data, int *size)
+pasori_packet_write(pasori *p, const uint8 *data, int *size)
 {				/* RAW Packet SEND */
   uint8 cmd[DATASIZE + 1];
   uint8 sum;
@@ -377,7 +377,7 @@ pasori_packet_read(pasori * p, uint8 * data, int *size)
  *
  * */
 int
-pasori_list_passive_target(pasori *pp, unsigned char *payload, int *size)
+pasori_list_passive_target(pasori *pp, const unsigned char *payload, int *size)
 {
   int r, n;
   unsigned char cmd[DATASIZE + 1];
@@ -403,7 +403,7 @@ pasori_list_passive_target(pasori *pp, unsigned char *payload, int *size)
 }
 
 int
-pasori_write(pasori *p, uint8 *data, int *size)
+pasori_write(pasori *p, const uint8 *data, int *size)
 {
   uint8 cmd[DATASIZE];
   int r, n, head_len;
@@ -538,6 +538,7 @@ pasori_init(pasori * p)
     pasori_init_test(p, S330_RF_ANTENNA_OFF, sizeof(S330_RF_ANTENNA_OFF));
     pasori_init_test(p, S330_RF_ANTENNA_ON, sizeof(S330_RF_ANTENNA_ON));
     nanosleep(&wait, NULL);
+    break;
   case PASORI_TYPE_S300:
     pasori_init_test(p, S300_END_TRANSPARENT_SESSION, sizeof(S300_END_TRANSPARENT_SESSION));
     pasori_init_test(p, S300_START_TRANSPARENT_SESSION, sizeof(S300_START_TRANSPARENT_SESSION));
@@ -649,7 +650,7 @@ pasori_version(pasori *p, int *v1, int *v2)
 }
 
 int
-pasori_type(pasori *p)
+pasori_type(const pasori *p)
 {
   if (p == NULL) {
     return -1;
